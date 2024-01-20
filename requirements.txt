@@ -1,5 +1,6 @@
 numpy==1.26.3
 pandas==2.1.4
+seaborn==0.13.1
 pyarrow==14.0.2
 requests==2.31.0
 matplotlib==3.8.2
