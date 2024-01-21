@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 DATA_PATH = os.environ.get("DATA_PATH")
+os.makedirs(DATA_PATH, exist_ok=True)
 
 # Function to load datasets
 def main():

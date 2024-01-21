@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 DATA_PATH = os.environ.get("DATA_PATH")
 PLOT_PATH = os.environ.get("PLOT_PATH")
+os.makedirs(PLOT_PATH, exist_ok=True)
 
 
 def extract_data() -> dict:
