@@ -12,7 +12,7 @@ CHAT_ID = os.environ.get("CHAT_ID")
 PLOT_PATH = os.environ.get("PLOT_PATH")
 bot = telebot.TeleBot(BOT_TOKEN)
 
-def main():
+def send_messages():
     filenames = [
         "Total Annual Blood Donations.png",
         "Average Daily Blood Donations.png",
@@ -44,4 +44,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    send_messages()

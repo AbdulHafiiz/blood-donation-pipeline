@@ -185,6 +185,9 @@ def create_plot(data_dict:dict) -> None:
 
     return
 
-if __name__ == "__main__":
+def generate_plots():
     data_dict = extract_data()
     create_plot(data_dict=data_dict)
+
+if __name__ == "__main__":
+    generate_plots()

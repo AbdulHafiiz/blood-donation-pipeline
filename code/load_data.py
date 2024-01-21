@@ -8,7 +8,7 @@ DATA_PATH = os.environ.get("DATA_PATH")
 os.makedirs(DATA_PATH, exist_ok=True)
 
 # Function to load datasets
-def main():
+def load_data():
     # Donation retention data
     with open(f"{DATA_PATH}/blood_donation_retention.parquet", "wb") as file:
         res = requests.get("https://dub.sh/ds-data-granular", allow_redirects=True)
@@ -30,4 +30,4 @@ def main():
 
 
 if __name__ == "__name__":
-    main()
+    load_data()
