@@ -183,3 +183,7 @@ def create_plot(data_dict:dict) -> None:
     plt.savefig(f"{PLOT_PATH}/Donation Retention Percentage.png", bbox_inches="tight")
 
     return
+
+if __name__ == "__main__":
+    data_dict = extract_data()
+    create_plot(data_dict=data_dict)
