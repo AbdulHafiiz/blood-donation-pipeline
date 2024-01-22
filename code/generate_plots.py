@@ -3,12 +3,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from dotenv import load_dotenv
-
-load_dotenv()
-DATA_PATH = os.environ.get("DATA_PATH")
-PLOT_PATH = os.environ.get("PLOT_PATH")
-os.makedirs(PLOT_PATH, exist_ok=True)
 
 
 def extract_data() -> dict:
