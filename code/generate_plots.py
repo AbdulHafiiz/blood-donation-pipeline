@@ -188,22 +188,14 @@ def create_plot(data_dict:dict) -> None:
         )
 
     # Donation retention
-    dono_years = dono_retention_df.groupby("donor_id").agg(first_visit=("visit_date", "min"), last_visit=("visit_date", "max"))
-    repeat_donors = dono_years[dono_years["first_visit"] != dono_years["last_visit"]]
-
-    visits_df = pd.concat(
-        [
-            dono_retention_df.groupby("visit_year").agg(visit_count=("donor_id", "count")),
-            dono_retention_df[dono_retention_df["donor_id"].isin(repeat_donors.index)].groupby("visit_year").agg(repeat_visit_counts=("donor_id", "count"))
-        ],
-        axis=1
-    )
-    visits_df = visits_df.assign(**{"Repeated Donors Percentage": visits_df["repeat_visit_counts"]/visits_df["visit_count"]})
-    visits_df = visits_df.assign(**{"Single Donors Percentage": 1.0-visits_df["Repeated Donors Percentage"]})
-    (visits_df.iloc[:, 2:] * 100).plot.area()
+    retention_crosstab = dono_retention_df.groupby(["donor_id", "visit_year"])["visit_date"].agg("count").unstack().fillna(0)
+    retention_df = (retention_crosstab > 0).astype(int).diff(axis=1).lt(0).sum(axis=0).div((retention_crosstab > 0).astype(int).sum(axis=0).shift(), 0).dropna().to_frame()
+    retention_df = retention_df.assign(**{"Single Donors Percentage": 1.0-retention_df[0]})
+    retention_df = retention_df.rename({0: "Doner Retention Percentage"}, axis=1)
+    (retention_df * 100).plot.area()
 
     plt.title(f"Percentage of donors retained per year")
-    plt.xticks(visits_df.index, rotation=90)
+    plt.xticks(retention_df.index, rotation=90)
     plt.yticks(list(range(0, 101, 10)))
     plt.gca().get_yaxis().set_major_formatter(ticker.PercentFormatter())
     plt.xlabel("Year")
