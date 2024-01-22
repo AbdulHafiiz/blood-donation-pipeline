@@ -9,8 +9,22 @@ from dotenv import load_dotenv
 load_dotenv()
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
-PLOT_PATH = os.environ.get("PLOT_PATH")
 bot = telebot.TeleBot(BOT_TOKEN)
+
+def send_document(message:None, file:None, filename:None):
+    message_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?"
+    bot.send_message(
+        chat_id=CHAT_ID,
+        text=f"Malaysia's blood donation statistics for {current_date.date().strftime('%d-%m-%Y')}"
+    )
+
+    bot.send_document(
+        chat_id=CHAT_ID,
+        document=file,
+        caption=filename.replace(".png", "")
+    )
+    return
+
 
 def send_messages():
     filenames = [
