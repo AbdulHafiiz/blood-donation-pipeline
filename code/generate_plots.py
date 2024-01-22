@@ -194,7 +194,7 @@ def create_plot(data_dict:dict) -> None:
     retention_df = retention_df.rename({0: "Doner Retention Percentage"}, axis=1)
     (retention_df * 100).plot.area()
 
-    plt.title(f"Percentage of donors retained per year")
+    plt.title("Donor retention percentage per year")
     plt.xticks(retention_df.index, rotation=90)
     plt.yticks(list(range(0, 101, 10)))
     plt.gca().get_yaxis().set_major_formatter(ticker.PercentFormatter())
