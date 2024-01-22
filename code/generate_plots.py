@@ -1,17 +1,27 @@
 import os
 import pandas as pd
 import seaborn as sns
+from io import BytesIO
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from .send_messages import send_document
+
+def buffer_image(plot_figure):
+    buffer = BytesIO()
+    plot_figure.savefig(buffer, format="png", bbox_inches="tight")
+    buffer.seek(0)
+    return buffer
 
 
 def extract_data() -> dict:
     # Load data
     dono_retention_df = pd.read_parquet("https://storage.data.gov.my/healthcare/blood_donation_retention_2024.parquet", engine="auto")
-    dono_fac_df = pd.read_csv(f"//raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_facility.csv")
-    dono_state_df = pd.read_csv(f"https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_state.csv")
-    newdono_fac_df = pd.read_csv(f"https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/newdonors_facility.csv")
-    newdono_state_df = pd.read_csv(f"https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/newdonors_state.csv")
+    dono_fac_df = pd.read_csv("https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_facility.csv")
+    dono_state_df = pd.read_csv("https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_state.csv")
+    newdono_fac_df = pd.read_csv("https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/newdonors_facility.csv")
+    newdono_state_df = pd.read_csv("https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/newdonors_state.csv")
 
     # Transform data
     dono_fac_df = dono_fac_df.assign(year=pd.to_datetime(dono_fac_df["date"]).dt.year)
@@ -65,7 +75,11 @@ def create_plot(data_dict:dict) -> None:
     plt.title("Total Annual Blood Donations")
     plt.xlabel("Year")
     plt.ylabel("Total No. of Donations")
-    plt.savefig(f"{PLOT_PATH}/Total Annual Blood Donations.png", bbox_inches="tight")
+    file = buffer_image(plt.gcf())
+    send_document(
+        file=file,
+        filename="Total Annual Blood Donations.png"
+    )
 
     # Average daily donations
     sns.regplot(
@@ -81,7 +95,11 @@ def create_plot(data_dict:dict) -> None:
     plt.title("Average Daily Blood Donations by Year")
     plt.xlabel("Year")
     plt.ylabel("No. of Average Daily Donations")
-    plt.savefig(f"{PLOT_PATH}/Average Daily Blood Donations.png", bbox_inches="tight")
+    file = buffer_image(plt.gcf())
+    send_document(
+        file=file,
+        filename="Average Daily Blood Donations.png"
+    )
 
     # Total annual donations (state breakdown)
     plt.figure(figsize=(10, 10))
@@ -91,7 +109,11 @@ def create_plot(data_dict:dict) -> None:
         if idx > 0 and idx % 4 == 0:
             plt.suptitle(f"Total Annual Blood Donations by State{'s'*(len(state_lst)>1)} ({', '.join(state_lst)})")
             plt.tight_layout()
-            plt.savefig(f"{PLOT_PATH}/State Donation Breakdown ({', '.join(state_lst)}).png", bbox_inches="tight")
+            file = buffer_image(plt.gcf())
+            send_document(
+                file=file,
+                filename=f"State Donation Breakdown ({', '.join(state_lst)}).png"
+            )
             plt.figure(figsize=(10, 10))
             state_lst = []
 
@@ -112,11 +134,15 @@ def create_plot(data_dict:dict) -> None:
         plt.xlabel("Year")
         plt.ylabel("Total No. of Donations")
         plt.grid(True)
+
     else:
         plt.suptitle(f"Total Annual Blood Donations by State{'s'*(len(state_lst)>1)} ({', '.join(state_lst)})")
         plt.tight_layout()
-        plt.savefig(f"{PLOT_PATH}/State Donation Breakdown ({', '.join(state_lst)}).png", bbox_inches="tight")
-        plt.figure(figsize=(10, 10))
+        file = buffer_image(plt.gcf())
+        send_document(
+            file=file,
+            filename=f"State Donation Breakdown ({', '.join(state_lst)}).png"
+        )
 
     # Average daily donations (state breakdown)
     plt.figure(figsize=(10, 10))
@@ -126,7 +152,11 @@ def create_plot(data_dict:dict) -> None:
         if idx > 0 and idx % 4 == 0:
             plt.suptitle(f"Average Daily Blood Donations for State{'s'*(len(state_lst)>1)} ({', '.join(state_lst)})")
             plt.tight_layout(rect=[0, 0, 1, 0.98])
-            plt.savefig(f"{PLOT_PATH}/State Daily Donation Breakdown ({', '.join(state_lst)}).png", bbox_inches="tight")
+            file = buffer_image(plt.gcf())
+            send_document(
+                file=file,
+                filename=f"State Daily Donation Breakdown ({', '.join(state_lst)}).png"
+            )
             plt.figure(figsize=(10, 10))
             state_lst = []
 
@@ -147,10 +177,15 @@ def create_plot(data_dict:dict) -> None:
         plt.xlabel("Year")
         plt.ylabel("Average Daily Blood Donations")
         plt.grid(True)
+
     else:
         plt.suptitle(f"Average Daily Blood Donations for State{'s'*(len(state_lst)>1)} ({', '.join(state_lst)})")
         plt.tight_layout(rect=[0, 0, 1, 0.98])
-        plt.savefig(f"{PLOT_PATH}/State Daily Donation Breakdown ({', '.join(state_lst)}).png", bbox_inches="tight")
+        file = buffer_image(plt.gcf())
+        send_document(
+            file=file,
+            filename=f"State Daily Donation Breakdown ({', '.join(state_lst)}).png"
+        )
 
     # Donation retention
     dono_years = dono_retention_df.groupby("donor_id").agg(first_visit=("visit_date", "min"), last_visit=("visit_date", "max"))
@@ -175,12 +210,17 @@ def create_plot(data_dict:dict) -> None:
     plt.ylabel("Average Daily Blood Donations")
     plt.legend(loc=(0.5, 0.5))
     plt.grid(True)
-    plt.savefig(f"{PLOT_PATH}/Donation Retention Percentage.png", bbox_inches="tight")
+    file = buffer_image(plt.gcf())
+    send_document(
+        file=file,
+        filename="Donation Retention Percentage.png"
+    )
 
     return
 
 def generate_plots():
     data_dict = extract_data()
+    send_document(message=f"Malaysia's blood donation statistics for {datetime.now(ZoneInfo('Asia/Kuala_Lumpur')).date().strftime('%d-%m-%Y')}")
     create_plot(data_dict=data_dict)
 
 if __name__ == "__main__":
