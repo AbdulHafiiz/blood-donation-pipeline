@@ -11,7 +11,7 @@ os.makedirs(DATA_PATH, exist_ok=True)
 def load_data():
     # Donation retention data
     with open(f"{DATA_PATH}/blood_donation_retention.parquet", "wb") as file:
-        res = requests.get("https://dub.sh/ds-data-granular", allow_redirects=True)
+        res = requests.get("https://storage.data.gov.my/healthcare/blood_donation_retention_2024.parquet", allow_redirects=True)
         file.write(res.content)
 
     # Aggregate data 
