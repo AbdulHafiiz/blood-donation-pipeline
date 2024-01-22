@@ -13,11 +13,11 @@ os.makedirs(PLOT_PATH, exist_ok=True)
 
 def extract_data() -> dict:
     # Load data
-    dono_retention_df = pd.read_parquet(f"{DATA_PATH}/blood_donation_retention.parquet", engine="auto")
-    dono_fac_df = pd.read_csv(f"{DATA_PATH}/donations_facility.csv")
-    dono_state_df = pd.read_csv(f"{DATA_PATH}/donations_state.csv")
-    newdono_fac_df = pd.read_csv(f"{DATA_PATH}/newdonors_facility.csv")
-    newdono_state_df = pd.read_csv(f"{DATA_PATH}/newdonors_state.csv")
+    dono_retention_df = pd.read_parquet("https://storage.data.gov.my/healthcare/blood_donation_retention_2024.parquet", engine="auto")
+    dono_fac_df = pd.read_csv(f"//raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_facility.csv")
+    dono_state_df = pd.read_csv(f"https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/donations_state.csv")
+    newdono_fac_df = pd.read_csv(f"https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/newdonors_facility.csv")
+    newdono_state_df = pd.read_csv(f"https://raw.githubusercontent.com/MoH-Malaysia/data-darah-public/main/newdonors_state.csv")
 
     # Transform data
     dono_fac_df = dono_fac_df.assign(year=pd.to_datetime(dono_fac_df["date"]).dt.year)
