@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from google.cloud import storage
-from google.cloud import storage
 from google.oauth2 import service_account
 
 load_dotenv()
