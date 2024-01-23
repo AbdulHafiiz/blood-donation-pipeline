@@ -11,7 +11,7 @@ with open("secrets.json", "r") as source:
 storage_credentials = service_account.Credentials.from_service_account_info(info)
 
 
-def download_blob(bucket_name, source_blob_name, destination_file_name):
+def download_blob(bucket_name, source_blob_name):
     storage_client = storage.Client(project=project_id, credentials=storage_credentials)
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
