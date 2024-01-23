@@ -7,6 +7,8 @@ from zoneinfo import ZoneInfo
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from .send_messages import send_document
+from .check_updates import check_latest_commit
+
 
 def buffer_image(plot_figure):
     buffer = BytesIO()
@@ -211,9 +213,10 @@ def create_plot(data_dict:dict) -> None:
     return
 
 def generate_plots():
-    data_dict = extract_data()
-    send_document(message=f"Malaysia's blood donation statistics for {datetime.now(ZoneInfo('Asia/Kuala_Lumpur')).date().strftime('%d-%m-%Y')}")
-    create_plot(data_dict=data_dict)
+    if check_latest_commit("https://api.github.com/repos/MoH-Malaysia/data-darah-public/commits?per_page=1"):
+        data_dict = extract_data()
+        send_document(message=f"Malaysia's blood donation statistics for {datetime.now(ZoneInfo('Asia/Kuala_Lumpur')).date().strftime('%d-%m-%Y')}")
+        create_plot(data_dict=data_dict)
 
 if __name__ == "__main__":
     generate_plots()
