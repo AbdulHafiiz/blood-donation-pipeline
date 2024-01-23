@@ -31,9 +31,9 @@ def check_latest_commit(url):
     previous_hash = download_blob(bucket_name="blood-donation-github", source_blob_name="github-hash.txt")
     if previous_hash != latest_commit_hash:
         upload_blob(bucket_name="blood-donation-github", source_file=StringIO(latest_commit_hash).read(), destination_blob_name="github-hash.txt")
-        print(True)
+        return True
     else:
-        print(False)
+        return False
 
 
 if __name__ == "__main__":
