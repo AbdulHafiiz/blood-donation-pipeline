@@ -1,5 +1,6 @@
 import os
 import requests
+from io import StringIO
 from dotenv import load_dotenv
 from google.cloud import storage
 from google.oauth2 import service_account
